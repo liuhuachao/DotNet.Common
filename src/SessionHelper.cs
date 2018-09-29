@@ -13,7 +13,7 @@ namespace DotNet.Common
         /// </summary>
         /// <param name="sessionName">Session对象名称</param>
         /// <returns>Session对象值</returns>
-        public static object GetSession(string sessionName)
+        public static object Get(string sessionName)
         {
             if (HttpContext.Current.Session[sessionName] == null)
             {
@@ -30,7 +30,7 @@ namespace DotNet.Common
         /// </summary>
         /// <param name="sessionName">session 名</param>
         /// <param name="sessionValue">session 值</param>
-        public static void SetSession(string sessionName, object sessionValue)
+        public static void Set(string sessionName, object sessionValue)
         {
             HttpContext.Current.Session.Remove(sessionName);
             HttpContext.Current.Session.Add(sessionName, sessionValue);
@@ -42,7 +42,7 @@ namespace DotNet.Common
         /// <param name="sessionName">session 名</param>
         /// <param name="sessionValue">session 值</param>
         /// <param name="expirationTime">过期时间（以分为单位）</param>
-        public static void SetSession(string sessionName, object sessionValue,int expirationTime)
+        public static void Set(string sessionName, object sessionValue, int expirationTime)
         {
             HttpContext.Current.Session.Remove(sessionName);
             HttpContext.Current.Session.Add(sessionName, sessionValue);
@@ -54,7 +54,7 @@ namespace DotNet.Common
         /// </summary>
         /// <param name="sessionName">Session名称</param>
         /// <returns></returns>
-        public static void RemoveSession(string sessionName)
+        public static void Remove(string sessionName)
         {
             HttpContext.Current.Session.Remove(sessionName);
         }
@@ -63,11 +63,9 @@ namespace DotNet.Common
         /// 清空所有的Session
         /// </summary>
         /// <returns></returns>
-        public static void ClearSession()
+        public static void Clear()
         {
             HttpContext.Current.Session.Clear();
         }
-
-
     }
 }
