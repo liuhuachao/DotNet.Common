@@ -13,6 +13,8 @@ namespace DotNet.Common
 {
     public class SendSmsHelper
     {
+        private static log4net.ILog _log = log4net.LogManager.GetLogger("SendSmsHelper");
+
         #region 配置参数
         // 短信应用SDK AppID
         static readonly int AppId = int.Parse(ConfigurationManager.AppSettings["AppId"]);
@@ -33,30 +35,37 @@ namespace DotNet.Common
         /// <param name="securityCode">验证码</param>
         /// <param name="expirationTime">过期时间（分钟）</param>
         /// <param name="templateId">短信模板ID，需要在短信应用中申请</param>
-        public static void SendSingleSMS(String[] phoneNumbers, string securityCode, string expirationTime = "5", int templateId = 195250)
+        /// /// <returns>返回信息</returns>
+        public static string SendSingleSMS(String[] phoneNumbers, string securityCode, string expirationTime = "5", int templateId = 195250)
         {
+            Exception ex = null;
+            string result = string.Empty;
             try
             {
                 expirationTime = (expirationTime == ExpirationTime) ? expirationTime : ExpirationTime;
                 templateId = (templateId == TemplateId) ? templateId : TemplateId;
 
                 SmsSingleSender ssender = new SmsSingleSender(AppId, AppKey);
-                var result = ssender.sendWithParam("86", phoneNumbers[0],
-                    templateId, new[] { securityCode, expirationTime }, SmsSign, "", "");
+                //result = ssender.sendWithParam("86", phoneNumbers[0], templateId, new[] { securityCode, expirationTime }, SmsSign, "", "").ToString();
                 Console.WriteLine(result);
             }
             catch (JSONException e)
             {
+                ex = e;
                 Console.WriteLine(e);
             }
             catch (HTTPException e)
             {
+                ex = e;
                 Console.WriteLine(e);
             }
             catch (Exception e)
             {
+                ex = e;
                 Console.WriteLine(e);
             }
+            _log.Info(string.Format("指定模板单发短信:手机号：{0}，验证码：{1}，返回信息：{2}", phoneNumbers[0], securityCode, result), ex);
+            return result;
         }
 
         /// <summary>
@@ -66,30 +75,38 @@ namespace DotNet.Common
         /// <param name="securityCode">验证码</param>
         /// <param name="expirationTime">过期时间（分钟）</param>
         /// <param name="templateId">短信模板ID，需要在短信应用中申请</param>
-        public static void SendMultiSMS(string[] phoneNumbers, string securityCode, string expirationTime = "5", int templateId = 195250)
+        /// <returns>返回信息</returns>
+        public static string SendMultiSMS(string[] phoneNumbers, string securityCode, string expirationTime = "5", int templateId = 195250)
         {
+            Exception ex = null;
+            string result = string.Empty;
             try
             {
                 expirationTime = (expirationTime == ExpirationTime) ? expirationTime : ExpirationTime;
                 templateId = (templateId == TemplateId) ? templateId : TemplateId;
 
                 SmsMultiSender msender = new SmsMultiSender(AppId, AppKey);
-                var sresult = msender.sendWithParam("86", phoneNumbers, templateId,
-                    new[] { securityCode, expirationTime }, SmsSign, "", "");
-                Console.WriteLine(sresult);
+                //result = msender.sendWithParam("86", phoneNumbers, templateId, new[] { securityCode, expirationTime }, SmsSign, "", "").ToString();
+                Console.WriteLine(result);
             }
             catch (JSONException e)
             {
+                ex = e;
                 Console.WriteLine(e);
             }
             catch (HTTPException e)
             {
+                ex = e;
                 Console.WriteLine(e);
             }
             catch (Exception e)
             {
+                ex = e;
                 Console.WriteLine(e);
             }
+
+            _log.Info(string.Format("指定模板单发短信:手机号：{0}，验证码：{1}，返回信息：{2}", phoneNumbers[0], securityCode, result), ex);
+            return result;
         }
     }
 }
