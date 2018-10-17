@@ -14,7 +14,7 @@ namespace DotNet.Common.Tests
         private static log4net.ILog _log = log4net.LogManager.GetLogger("SendSmsHelperTests");
 
         [TestMethod()]
-        public void SendSingleSMSTest()
+        public void SendSMSTest()
         {
             string[] phoneNumbers = { "13824394952", "18171097305" };
             string validCode = RandomHelper.GetRandomString(4);
