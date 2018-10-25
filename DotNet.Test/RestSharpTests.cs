@@ -9,20 +9,17 @@ namespace DotNet.Test
     public class RestSharpTests
     {
         [TestMethod]
-        public async Task TestHttpGet()
+        public async Task RestSharpTest()
         {
-            string expectedStr = "200";
-            string actualStr = "";
-
             var client = new RestClient("http://api.chsgw.com/");
             var request = new RestRequest("v1/Homes/GetDetail", Method.GET);
-
             request.AddParameter("id", 300);
             request.AddParameter("showType", 3);
-
             IRestResponse<ResultMsg> response = await client.ExecuteTaskAsync<ResultMsg>(request);
-            actualStr = response.Data.Code.ToString();
 
+            string expectedStr = "200";
+            string actualStr = "";
+            actualStr = response.Data.Code.ToString();
             Assert.AreEqual(expectedStr, actualStr);
         }
 

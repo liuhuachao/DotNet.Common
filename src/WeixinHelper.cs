@@ -4,15 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace DotNet
 {
+    /// <summary>
+    /// 微信授权使用的是OAuth2.0授权的方式，主要步骤如下：
+    /// 第一步：用户同意授权，获取code
+    /// 第二步：通过code换取网页授权access_token
+    /// 第三步：刷新access_token（如果需要）
+    /// 第四步：拉取用户信息(需scope为 snsapi_userinfo)
+    /// </summary>
     public class WeixinHelper
     {
         public WeixinHelper() { }
 
         /// <summary>
-        /// 取得Access Token
+        /// 获取code
+        /// </summary>
+        /// <param name="app_id"></param>
+        /// <param name="app_key"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static string GetCodeUrl(string appId, string redirectUri, string scope = "snsapi_userinfo", string device = "mobile")
+        {
+            string state = Guid.NewGuid().ToString().Replace("-", "");
+            string weixinCodeUrl = System.Configuration.ConfigurationManager.AppSettings["WeixinCodeUrl"];
+            string send_url = string.Format("{0}/get-weixin-code.html?appid={1}&scope={2}&state={3}&redirect_uri={4}&device={5}",weixinCodeUrl,appId, scope, state, redirectUri, device);
+            return send_url;
+        }
+
+        /// <summary>
+        /// 获取Access Token
         /// </summary>
         /// <param name="config">接口参数配置文件</param>
         /// <param name="code">临时Authorization Code</param>
@@ -102,8 +125,32 @@ namespace DotNet
         }
 
         /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="access_token"></param>
+        /// <param name="open_id"></param>
+        /// <param name="lang"></param>
+        /// <returns></returns>
+        public static WXUserInfo GetUserInfo(string access_token, string open_id, string lang = "zh_CN")
+        {
+            var client = new RestClient("https://api.weixin.qq.com/");
+            var request = new RestRequest("sns/userinfo", Method.GET);
+            request.AddParameter("access_token", access_token);
+            request.AddParameter("openid", open_id);
+            request.AddParameter("lang", lang);
+
+            var response = client.Execute(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK) return null;
+            return JsonConvert.DeserializeObject<WXUserInfo>(response.Content);
+        }
+
+        /// <summary>
         /// 验证微信签名
         /// </summary>
+        /// * 将token、timestamp、nonce三个参数进行字典序排序
+        /// * 将三个参数字符串拼接成一个字符串进行sha1加密
+        /// * 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信。
+        /// <returns></returns>
         public bool CheckSignature(string token, string timestamp, string nonce, string signature)
         {
             string[] args = { token, timestamp, nonce };
@@ -181,6 +228,52 @@ namespace DotNet
             byte[] hashedBytes = System.Security.Cryptography.SHA1.Create().ComputeHash(cleanBytes);
             return BitConverter.ToString(hashedBytes).Replace("-", "");
         }
+    }
 
+    /// <summary>
+    /// 微信用户信息
+    /// </summary>
+    public class WXUserInfo
+    {
+        /// <summary>
+        /// 用户唯一标识
+        /// </summary>
+        public string openid { get; set; }
+        /// <summary>
+        /// 用户昵称
+        /// </summary>
+        public string nickname { get; set; }
+        /// <summary>
+        /// 用户性别
+        /// </summary>
+        public int sex { get; set; }
+        /// <summary>
+        /// 语言
+        /// </summary>
+        public string language { get; set; }
+        /// <summary>
+        /// 城市
+        /// </summary>
+        public string city { get; set; }
+        /// <summary>
+        /// 省份
+        /// </summary>
+        public string province { get; set; }
+        /// <summary>
+        /// 国家
+        /// </summary>
+        public string country { get; set; }
+        /// <summary>
+        /// 头像
+        /// </summary>
+        public string headimgurl { get; set; }
+        /// <summary>
+        /// 用户特权信息
+        /// </summary>
+        public object privilege { get; set; }
+        /// <summary>
+        /// 联合Id,只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
+        /// </summary>
+        //public string unionid { get; set; }
     }
 }
