@@ -84,6 +84,7 @@
     <Compile Include="CookieHelper.cs" />
     <Compile Include="EncryptHelper.cs" />
     <Compile Include="HttpHelper.cs" />
+    <Compile Include="ImageHelper.cs" />
     <Compile Include="JsHelper.cs" />
     <Compile Include="MailHelper.cs" />
     <Compile Include="Md5Helper.cs" />
