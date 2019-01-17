@@ -93,7 +93,7 @@
     <Compile Include="RegexHelper.cs" />
     <Compile Include="SendSmsHelper.cs" />
     <Compile Include="SessionHelper.cs" />
-    <Compile Include="VerificationCode.cs" />
+    <Compile Include="ValidCodeHelper.cs" />
     <Compile Include="WeixinHelper.cs" />
   </ItemGroup>
   <ItemGroup>

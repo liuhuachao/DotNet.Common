@@ -5,9 +5,9 @@ using System.IO;
 namespace DotNet.Common
 {
     /// <summary>
-    /// 图形验证码
+    /// 验证码操作类
     /// </summary>
-    public class VerificationCode /*: System.Web.UI.Page*/
+    public class ValidCodeHelper /*: System.Web.UI.Page*/
     {
         /// <summary>
         /// 加载
