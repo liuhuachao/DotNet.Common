@@ -7,7 +7,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace DotNet
+namespace DotNet.Common
 {
     /// <summary>
     /// NPOIHelper,Excel导入导出帮助类 

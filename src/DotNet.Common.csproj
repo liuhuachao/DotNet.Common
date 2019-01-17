@@ -7,8 +7,8 @@
     <ProjectGuid>{9D2998EF-017E-4D2F-8E20-04195E8B33C7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DotNet</RootNamespace>
-    <AssemblyName>DotNet</AssemblyName>
+    <RootNamespace>DotNet.Common</RootNamespace>
+    <AssemblyName>DotNet.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

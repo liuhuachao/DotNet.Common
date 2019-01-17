@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace DotNet
+namespace DotNet.Common
 {
     /// <summary>
     /// 客户端脚本输出

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace DotNet
+namespace DotNet.Common
 {
     /// <summary>
     /// 微信授权使用的是OAuth2.0授权的方式，主要步骤如下：
