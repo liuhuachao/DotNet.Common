@@ -11,7 +11,7 @@ namespace DotNet.Common
     /// </summary>
     public class EncryptHelper
     {
-        private const string SECRETKEY = "baisijie";
+        private const string SECRETKEY = "liuhuachao";
 
         public EncryptHelper()
         {

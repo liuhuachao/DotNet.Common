@@ -46,7 +46,7 @@ namespace DotNet.Common
                 templateId = (templateId == TemplateId) ? templateId : TemplateId;
 
                 SmsSingleSender ssender = new SmsSingleSender(AppId, AppKey);
-                //result = ssender.sendWithParam("86", phoneNumbers[0], templateId, new[] { securityCode, expirationTime }, SmsSign, "", "").ToString();
+                result = ssender.sendWithParam("86", phoneNumbers[0], templateId, new[] { securityCode, expirationTime }, SmsSign, "", "").ToString();
                 Console.WriteLine(result);
             }
             catch (JSONException e)
