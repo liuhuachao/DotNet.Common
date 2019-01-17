@@ -6,10 +6,10 @@ using RestSharp;
 namespace DotNet.Test
 {
     [TestClass]
-    public class RestSharpTests
+    public class RestSharpTest
     {
         [TestMethod]
-        public async Task RestSharpTest()
+        public async Task TestRestSharp()
         {
             var client = new RestClient("http://api.chsgw.com/");
             var request = new RestRequest("v1/Homes/GetDetail", Method.GET);

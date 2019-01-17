@@ -1,20 +1,20 @@
-﻿using DotNet.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using DotNet.Common;
 
-namespace DotNet.Common.Tests
+namespace DotNet.Test
 {
     [TestClass()]
-    public class SendSmsHelperTests
+    public class SendSmsHelperTest
     {
         private static log4net.ILog _log = log4net.LogManager.GetLogger("SendSmsHelperTests");
 
         [TestMethod()]
-        public void SendSMSTest()
+        public void TestSendSMS()
         {
             string[] phoneNumbers = { "13824394952", "18171097305" };
             string validCode = RandomHelper.GetRandomString(4);
