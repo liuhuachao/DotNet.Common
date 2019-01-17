@@ -28,6 +28,20 @@ namespace DotNet.Common
         }
 
         /// <summary>
+        /// 添加一个Cookie
+        /// </summary>
+        /// <param name="cookieName"></param>
+        /// <param name="cookieValue"></param>
+        public static void Add(string cookieName, string cookieValue)
+        {
+            HttpCookie cookie = new HttpCookie(cookieName)
+            {
+                Value = cookieValue
+            };
+            HttpContext.Current.Response.Cookies.Add(cookie);
+        }
+
+        /// <summary>
         /// 添加一个Cookie,带过期时间
         /// </summary>
         /// <param name="cookieName">cookie名</param>
@@ -44,14 +58,23 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 添加一个Cookie，24小时过期
+        /// 添加一个Cookie，带过期时间、域名和路径
         /// </summary>
         /// <param name="cookieName"></param>
         /// <param name="cookieValue"></param>
-        public static void Add(string cookieName, string cookieValue)
+        /// <param name="ts"></param>
+        /// <param name="domain"></param>
+        /// <param name="path"></param>
+        public static void Add(string cookieName, string cookieValue, TimeSpan ts, string domain, string path)
         {
-            TimeSpan ts = TimeSpan.FromDays(1);
-            Add(cookieName, cookieValue, ts);
+            HttpCookie cookie = new HttpCookie(cookieName)
+            {
+                Value = cookieValue,
+                Expires = DateTime.Now.Add(ts),
+                Domain = domain,
+                Path = path
+            };
+            HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
         /// <summary>
@@ -63,6 +86,22 @@ namespace DotNet.Common
             HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
             if (cookie != null)
             {
+                cookie.Expires = DateTime.Now.AddDays(-1);
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+
+        /// <summary>
+        /// 移除指定的Cookie,带域名
+        /// </summary>
+        /// <param name="cookieName"></param>
+        /// <param name="domain"></param>
+        public static void RemoveByDomain(string cookieName, string domain)
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
+            if (cookie != null)
+            {
+                cookie.Domain = domain;
                 cookie.Expires = DateTime.Now.AddDays(-1);
                 HttpContext.Current.Response.Cookies.Add(cookie);
             }
@@ -107,14 +146,18 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 添加一个带子健的Cookie,1天过期
+        /// 添加一个带子健的Cookie
         /// </summary>
         /// <param name="cookieName">cookie名</param>
         /// <param name="dicCookies">键值对字典</param>
         public static void Add(string cookieName, Dictionary<string, string> dicValues)
         {
-            TimeSpan ts = TimeSpan.FromDays(1);
-            Add(cookieName, dicValues, ts);
+            HttpCookie httpCookie = new HttpCookie(cookieName);
+            foreach (var cookie in dicValues)
+            {
+                httpCookie.Values[cookie.Key] = cookie.Value;
+            }
+            HttpContext.Current.Response.Cookies.Add(httpCookie);
         }
 
         /// <summary>
@@ -135,19 +178,49 @@ namespace DotNet.Common
             }
             HttpContext.Current.Response.Cookies.Add(httpCookie);
         }
+        public static void Add(string cookieName, Dictionary<string, string> dicValues, string domain, string path)
+        {
+            HttpCookie httpCookie = new HttpCookie(cookieName)
+            {
+                Domain = domain,
+                Path = path
+            };
+            foreach (var cookie in dicValues)
+            {
+                httpCookie.Values[cookie.Key] = cookie.Value;
+            }
+            HttpContext.Current.Response.Cookies.Add(httpCookie);
+        }
 
         /// <summary>
         /// 移除Cookie中指定的键，若是最后一个键则移除整个Cookie
         /// </summary>
         /// <param name="cookieName"></param>
         /// <param name="keyName"></param>
-        public static void Remove(string cookieName, string keyName)
+        public static void RemoveByNameAndKey(string cookieName, string keyName)
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
             if (cookie != null)
             {
                 if (cookie.Values.Count > 0)
                 {
+                    cookie.Values.Remove(keyName);
+                    if (cookie.Values.Count == 1)
+                    {
+                        cookie.Expires = DateTime.Now.AddDays(-1);
+                    }
+                    HttpContext.Current.Response.Cookies.Add(cookie);
+                }
+            }
+        }
+        public static void RemoveByNameAndKey(string cookieName, string keyName, string domain)
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
+            if (cookie != null)
+            {
+                if (cookie.Values.Count > 0)
+                {
+                    cookie.Domain = domain;
                     cookie.Values.Remove(keyName);
                     if (cookie.Values.Count == 1)
                     {
