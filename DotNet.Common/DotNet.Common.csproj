@@ -83,6 +83,7 @@
     <Compile Include="EncryptHelper.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="JsHelper.cs" />
+    <Compile Include="MailHelper.cs" />
     <Compile Include="Md5Helper.cs" />
     <Compile Include="NPOIHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

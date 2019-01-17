@@ -12,11 +12,11 @@ namespace DotNet.Common
     public class RegexHelper
     {
         #region 模式字符串
-        private readonly string PhonePattern = @"^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199)\d{8}$";       //手机号码：3位号段，后面加8位数字
-        private readonly string TelPattern = @"^0(\d{2}-?\d{8}|\d{3}-?\d{7})$";                                                         //电话号码：以0开头,3到4位数字的区号，中间加-(或者不加)，后面接7到8位的数字
-        private readonly string EmailPattern = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";                                        //Email地址
-        private readonly string PasswordPattern = @"^(?=.*[0-9]+)(?=.*[a-zA-Z]+)\S{6,16}$";                                             //强密码：6-16位至少包含字母和数字
-        private readonly string OrganizationCodePattern = @"^[1-9A-GNY]{1}[123459]{1}[1-9]{2}[0-9]{4}[0-9A-Z]{10}$";                    //社会统一信用代码
+        public static readonly string PhonePattern = @"^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199)\d{8}$";       //手机号码：3位号段，后面加8位数字
+        public static readonly string TelPattern = @"^0(\d{2}-?\d{8}|\d{3}-?\d{7})$";                                                         //电话号码：以0开头,3到4位数字的区号，中间加-(或者不加)，后面接7到8位的数字
+        public static readonly string EmailPattern = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";                                        //Email地址
+        public static readonly string PasswordPattern = @"^(?=.*[0-9]+)(?=.*[a-zA-Z]+)\S{6,16}$";                                             //强密码：6-16位至少包含字母和数字
+        public static readonly string OrganizationCodePattern = @"^[1-9A-GNY]{1}[123459]{1}[1-9]{2}[0-9]{4}[0-9A-Z]{10}$";                    //社会统一信用代码
         #endregion
 
         /// <summary>
