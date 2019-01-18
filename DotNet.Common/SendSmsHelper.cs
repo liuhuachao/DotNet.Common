@@ -1,31 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using qcloudsms_csharp;
 using qcloudsms_csharp.httpclient;
 using qcloudsms_csharp.json;
 
 namespace DotNet.Common
 {
+    /// <summary>
+    /// 短信处理类
+    /// </summary>
     public class SendSmsHelper
     {
+        #region 参数
+        // 日志
         private static log4net.ILog _log = log4net.LogManager.GetLogger("SendSmsHelper");
-
-        #region 配置参数
         // 短信应用SDK AppID
-        static readonly int AppId = int.Parse(ConfigurationManager.AppSettings["AppId"]);
+        private static readonly int AppId = int.Parse(ConfigurationManager.AppSettings["AppId"]);
         // 短信应用SDK AppKey
-        static readonly string AppKey = ConfigurationManager.AppSettings["AppKey"];
+        private static readonly string AppKey = ConfigurationManager.AppSettings["AppKey"];
         // 短信签名
-        static readonly string SmsSign = ConfigurationManager.AppSettings["SmsSign"].ToString();
+        private static readonly string SmsSign = ConfigurationManager.AppSettings["SmsSign"].ToString();
         // 短信模板ID，需要在短信应用中申请
-        static readonly int TemplateId = int.Parse(ConfigurationManager.AppSettings["TemplateId"]);
+        private static readonly int TemplateId = int.Parse(ConfigurationManager.AppSettings["TemplateId"]);
         // 过期时间（分钟）
-        static readonly string ExpirationTime = ConfigurationManager.AppSettings["ExpirationTime"];
+        private static readonly string ExpirationTime = ConfigurationManager.AppSettings["ExpirationTime"];
         #endregion 
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace DotNet.Common
                 templateId = (templateId == TemplateId) ? templateId : TemplateId;
 
                 SmsMultiSender msender = new SmsMultiSender(AppId, AppKey);
-                //result = msender.sendWithParam("86", phoneNumbers, templateId, new[] { securityCode, expirationTime }, SmsSign, "", "").ToString();
+                result = msender.sendWithParam("86", phoneNumbers, templateId, new[] { securityCode, expirationTime }, SmsSign, "", "").ToString();
                 Console.WriteLine(result);
             }
             catch (JSONException e)
