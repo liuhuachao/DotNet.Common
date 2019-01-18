@@ -17,6 +17,7 @@ namespace DotNet.Common
         public static readonly string EmailPattern = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";                                        //Email地址
         public static readonly string PasswordPattern = @"^(?=.*[0-9]+)(?=.*[a-zA-Z]+)\S{6,16}$";                                             //强密码：6-16位至少包含字母和数字
         public static readonly string OrganizationCodePattern = @"^[1-9A-GNY]{1}[123459]{1}[1-9]{2}[0-9]{4}[0-9A-Z]{10}$";                    //社会统一信用代码
+        public static readonly string IPV4Pattern = @"^(([0-1]?\d{1,2}|2([0-4]\d|5[0-5]))\.){3}([0-1]?\d{1,2}|2([0-4]\d|5[0-5]))$";           //IPV4:（0-255）.（0-255）.（0-255）.（0-255）
         #endregion
 
         /// <summary>
