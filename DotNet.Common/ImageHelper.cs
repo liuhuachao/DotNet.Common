@@ -129,16 +129,16 @@ namespace DotNet.Common
         /// <param name="watermarkTransparency">水印的透明度 1--10 10为不透明</param>
         public static void AddImageWaterMark(string imgPath, string filename, string watermarkFilename, int watermarkStatus, int quality, int watermarkTransparency)
         {
-            if (!File.Exists(GetMapPath(imgPath))) return;
-            byte[] _ImageBytes = File.ReadAllBytes(GetMapPath(imgPath));
+            if (!File.Exists(FileHelper.GetMapPath(imgPath))) return;
+            byte[] _ImageBytes = File.ReadAllBytes(FileHelper.GetMapPath(imgPath));
             Image img = Image.FromStream(new System.IO.MemoryStream(_ImageBytes));
-            filename = GetMapPath(filename);
+            filename = FileHelper.GetMapPath(filename);
 
             if (watermarkFilename.StartsWith("/") == false)
             {
                 watermarkFilename = "/" + watermarkFilename;
             }                
-            watermarkFilename = GetMapPath(watermarkFilename);
+            watermarkFilename = FileHelper.GetMapPath(watermarkFilename);
             if (!File.Exists(watermarkFilename)) return;
             Graphics g = Graphics.FromImage(img);
             //设置高质量插值法
@@ -258,9 +258,9 @@ namespace DotNet.Common
         /// <param name="fontsize">字体大小</param>
         public static void AddTextWaterMark(string imgPath, string filename, string watermarkText, int watermarkStatus, int quality, string fontname, int fontsize)
         {
-            byte[] _ImageBytes = File.ReadAllBytes(GetMapPath(imgPath));
+            byte[] _ImageBytes = File.ReadAllBytes(FileHelper.GetMapPath(imgPath));
             Image img = Image.FromStream(new System.IO.MemoryStream(_ImageBytes));
-            filename = GetMapPath(filename);
+            filename = FileHelper.GetMapPath(filename);
 
             Graphics g = Graphics.FromImage(img);
             //设置高质量插值法
@@ -342,34 +342,6 @@ namespace DotNet.Common
 
             g.Dispose();
             img.Dispose();
-        }
-
-        /// <summary>
-        /// 获得绝对路径
-        /// </summary>
-        /// <param name="strPath">指定的路径</param>
-        /// <returns>绝对路径</returns>
-        public static string GetMapPath(string strPath)
-        {
-            String dirPath = "";
-            if (strPath.ToLower().StartsWith("http://"))
-            {
-                return strPath;
-            }
-            if (HttpContext.Current != null)
-            {
-                dirPath = HttpContext.Current.Server.MapPath(strPath);
-            }
-            else
-            {
-                strPath = strPath.Replace("/", "\\");
-                if (strPath.StartsWith("\\"))
-                {
-                    strPath = strPath.Substring(strPath.IndexOf('\\', 1)).TrimStart('\\');
-                }
-                dirPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strPath);
-            }
-            return dirPath;
         }
     }
 }
