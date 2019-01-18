@@ -12,7 +12,7 @@ namespace DotNet.Common
     public class DateTimeHelper
     {
         /// <summary>
-        /// 将泛型数据转换为DateTime,转换失败返回默认值
+        /// 将泛型数据转换为DateTime
         /// </summary>
         /// <typeparam name="T">数据类型</typeparam>
         /// <param name="dt">泛型数据</param>
@@ -52,7 +52,7 @@ namespace DotNet.Common
         /// <param name="DateTime1"></param>
         /// <param name="DateTime2"></param>
         /// <returns></returns>
-        public static string DateDiff(DateTime DateTime1, DateTime DateTime2)
+        public static string GetTimeDiff(DateTime DateTime1, DateTime DateTime2)
         {
             string dateDiff = null;
             try

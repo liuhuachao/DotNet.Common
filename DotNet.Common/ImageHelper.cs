@@ -17,7 +17,7 @@ namespace DotNet.Common
     public class ImageHelper
     {
         /// <summary>
-        /// 根据原图片生成指定规格的新图片
+        /// 生成缩略图
         /// </summary>
         /// <param name="sourceImgPath"></param>
         /// <param name="targetImgPath"></param>
@@ -345,7 +345,7 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 获得当前绝对路径
+        /// 获得绝对路径
         /// </summary>
         /// <param name="strPath">指定的路径</param>
         /// <returns>绝对路径</returns>
