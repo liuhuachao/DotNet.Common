@@ -3,10 +3,19 @@
 namespace DotNet.Common
 {
     /// <summary>
-    /// 客户端脚本输出
+    /// JavaScript 操作类
     /// </summary>
-    public class JsHelper
+    public class JavaScriptHelper
     {
+        /// <summary>
+        /// 弹出信息
+        /// </summary>
+        public static void Alert(string message)
+        {
+            string js = "<script language=javascript>alert('{0}');</script>";
+            HttpContext.Current.Response.Write(string.Format(js, message));
+        }
+
         /// <summary>
         /// 弹出信息,并跳转指定页面。
         /// </summary>
@@ -15,6 +24,15 @@ namespace DotNet.Common
             string js = "<script language=javascript>alert('{0}');window.location.replace('{1}')</script>";
             HttpContext.Current.Response.Write(string.Format(js, message, toURL));
             HttpContext.Current.Response.End();
+        }
+
+        /// <summary>
+        /// 弹出信息,并跳转到父窗口
+        /// </summary>
+        public static void AlertAndParentUrl(string message, string toURL)
+        {
+            string js = "<script language=javascript>alert('{0}');window.top.location.replace('{1}')</script>";
+            HttpContext.Current.Response.Write(string.Format(js, message, toURL));
         }
 
         /// <summary>
@@ -28,7 +46,7 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 直接跳转到指定的页面
+        /// 跳转指定页面
         /// </summary>
         public static void Redirect(string toUrl)
         {
@@ -37,16 +55,7 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 弹出信息 并指定到父窗口
-        /// </summary>
-        public static void AlertAndParentUrl(string message, string toURL)
-        {
-            string js = "<script language=javascript>alert('{0}');window.top.location.replace('{1}')</script>";
-            HttpContext.Current.Response.Write(string.Format(js, message, toURL));
-        }
-
-        /// <summary>
-        /// 返回到父窗口
+        /// 跳转到父窗口
         /// </summary>
         public static void ParentRedirect(string ToUrl)
         {
@@ -62,15 +71,6 @@ namespace DotNet.Common
             string js = @"<Script language='JavaScript'>history.go({0});</Script>";
             HttpContext.Current.Response.Write(string.Format(js, value));
             HttpContext.Current.Response.End();
-        }
-
-        /// <summary>
-        /// 弹出信息
-        /// </summary>
-        public static void Alert(string message)
-        {
-            string js = "<script language=javascript>alert('{0}');</script>";
-            HttpContext.Current.Response.Write(string.Format(js, message));
         }
 
         /// <summary>
