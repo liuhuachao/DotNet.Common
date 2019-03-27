@@ -12,5 +12,12 @@ namespace DotNet.Test
         {
             var ds = DataTableHelper.XMLToDataSet("c:/BOM.xml");
         }
+
+        [TestMethod]
+        public void TestCreateXml()
+        {
+            XMLHelper.Create("c:/students.xml","school","class","student","id","001");
+        }
+        
     }
 }

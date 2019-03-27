@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace DotNet.Common
@@ -68,233 +71,115 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 加载XML文件
+        /// 创建
         /// </summary>
-        /// <param name="fileName">XML文件</param>
-        private static XmlDocument Load(string fileName)
+        /// <param name="xmlfile"></param>
+        /// <param name="rootElement"></param>
+        /// <param name="subElement"></param>
+        /// <param name="element"></param>
+        /// <param name="attribute"></param>
+        /// <param name="value"></param>
+        public static void Create(string xmlfile,string rootElement,string subElement,string element,string attribute,string value)
         {
-            XmlDocument xmldoc = new XmlDocument();
-            try
+            if (!File.Exists(xmlfile))
             {
-                if (File.Exists(fileName))
-                {
-                    xmldoc.Load(fileName);
-                }
+                XDocument xd = new XDocument(
+                    new XElement(rootElement, 
+                        new XElement(subElement, 
+                            new XElement(element, new XAttribute(attribute, value))
+                        )
+                    )
+                );
+                xd.Save(xmlfile);
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            return xmldoc;
         }
 
         /// <summary>
-        /// 读取指定路径和节点的值
+        /// 新增
         /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="attribute">属性名，非空时返回该属性值，否则返回串联值</param>
-        /// 使用示列:
-        /// XMLProsess.Read(path, "/Node")
-        public static string Read(string path, string node)
-        {
-            string value = "";
-            try
-            {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                value = xn.InnerText;
-            }
-            catch { }
-            return value;
-        }
-
-        /// <summary>
-        /// 读取指定路径和节点的属性值
-        /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="attribute">属性名，非空时返回该属性值，否则返回串联值</param>
-        /// 使用示列:
-        /// XMLProsess.Read(path, "/Node/Element[@Attribute='Name']", "Attribute")
-        public static string Read(string path, string node, string attribute)
-        {
-            string value = "";
-            try
-            {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                value = (attribute.Equals("") ? xn.InnerText : xn.Attributes[attribute].Value);
-            }
-            catch { }
-            return value;
-        }
-
-        /// <summary>
-        /// 插入数据
-        /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="element">元素名，非空时插入新元素，否则在该元素中插入属性</param>
-        /// <param name="attribute">属性名，非空时插入该元素属性值，否则插入元素值</param>
-        /// <param name="value">值</param>
-        /// 使用示列:
-        /// XMLProsess.Insert(path, "/Node", "Element", "", "Value")
-        /// XMLProsess.Insert(path, "/Node", "Element", "Attribute", "Value")
-        /// XMLProsess.Insert(path, "/Node", "", "Attribute", "Value")
+        /// <param name="path"></param>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <param name="attribute"></param>
+        /// <param name="value"></param>
         public static void Insert(string path, string node, string element, string attribute, string value)
         {
-            try
+            XDocument xdoc = XDocument.Load(path);
+            XElement xeElement = xdoc.Root.Element(node);
+            XElement xeNew = new XElement(element);
+            xeNew.SetAttributeValue(attribute, value);
+            xeElement.Add(xeNew);
+        }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="xmlFile"></param>
+        public static void Read(string xmlFile)
+        {
+            XDocument xdoc = XDocument.Load(xmlFile); 
+            IEnumerable<XElement> xeSet = xdoc.Root.Elements();
+            foreach (XElement xeRoot in xeSet)
             {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                if (element.Equals(""))
+                foreach (XElement xe in xeRoot.Elements())
                 {
-                    if (!attribute.Equals(""))
-                    {
-                        XmlElement xe = (XmlElement)xn;
-                        xe.SetAttribute(attribute, value);
-                    }
+                    Console.WriteLine($"Name:{xe.Name},Attribute:{xe.Attribute("id")}");
                 }
-                else
-                {
-                    XmlElement xe = doc.CreateElement(element);
-                    if (attribute.Equals(""))
-                        xe.InnerText = value;
-                    else
-                        xe.SetAttribute(attribute, value);
-                    xn.AppendChild(xe);
-                }
-                doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
+            }
+        }
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="element"></param>
+        /// <param name="attribute"></param>
+        /// <param name="value"></param>
+        public static void Update(string path, string element, string attribute, string value)
+        {
+            try
+            {
+                XDocument xdoc = XDocument.Load(path);
+                XElement xe = xdoc.Root.Elements(element).FirstOrDefault();
+                xe.SetAttributeValue(attribute, value);  
+                xdoc.Save(path);
             }
             catch { }
         }
 
         /// <summary>
-        /// 插入数据
+        /// 删除
         /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="element">元素名，非空时插入新元素，否则在该元素中插入属性</param>
-        /// <param name="strList">由XML属性名和值组成的二维数组</param>
-        public static void Insert(string path, string node, string element, string[][] strList)
+        /// <param name="xmlfile"></param>
+        /// <param name="parentElement"></param>
+        /// <param name="finalElement"></param>
+        /// <param name="attribute"></param>
+        /// <param name="value"></param>
+        public static void Delete(string xmlfile,string parentElement,string finalElement,string attribute,string value)
         {
-            try
+            if (File.Exists(xmlfile))
             {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                XmlElement xe = doc.CreateElement(element);
-                string strAttribute = "";
-                string strValue = "";
-                for (int i = 0; i < strList.Length; i++)
-                {
-                    for (int j = 0; j < strList[i].Length; j++)
-                    {
-                        if (j == 0)
-                            strAttribute = strList[i][j];
-                        else
-                            strValue = strList[i][j];
-                    }
-                    if (strAttribute.Equals(""))
-                        xe.InnerText = strValue;
-                    else
-                        xe.SetAttribute(strAttribute, strValue);
-                }
-                xn.AppendChild(xe);
-                doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
-            }
-            catch { }
-        }
+                XDocument xd = XDocument.Load(xmlfile);
 
-        /// <summary>
-        /// 修改指定节点的数据
-        /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="value">值</param>
-        /// 使用示列:
-        /// XMLProsess.Update(path, "/Node","Value")
-        public static void Update(string path, string node, string value)
-        {
-            try
-            {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                xn.InnerText = value;
-                doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
-            }
-            catch { }
-        }
+                //删除节点 全部没有了
+                xd.Descendants(parentElement)
+                    .Where(p => p.Element(finalElement).Attribute(attribute).Value == value).First()
+                    .Remove();
+                //删除节点内容 只剩下节点名
+                xd.Descendants(parentElement)
+                    .Where(p => p.Element(finalElement).Attribute(attribute).Value == value).First()
+                    .RemoveAll();
+                //删除节点属性 内容还在
+                xd.Descendants(parentElement)
+                    .Where(p => p.Element(finalElement).Attribute(attribute).Value == value).First()
+                    .RemoveAttributes();
+                //删除节点内容 只剩下节点名和属性
+                xd.Descendants(parentElement)
+                    .Where(p => p.Element(finalElement).Attribute(attribute).Value == value).First()
+                    .RemoveNodes();
 
-        /// <summary>
-        /// 修改指定节点的属性值
-        /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="attribute">属性名，非空时修改该节点属性值，否则修改节点值</param>
-        /// <param name="value">值</param>
-        /// 使用示列:
-        /// XMLProsess.Update(path, "/Node", "Attribute", "Value")
-        public static void Update(string path, string node, string attribute, string value)
-        {
-            try
-            {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                XmlElement xe = (XmlElement)xn;
-                if (attribute.Equals(""))
-                    xe.InnerText = value;
-                else
-                    xe.SetAttribute(attribute, value);
-                doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
+                xd.Save(xmlfile);
             }
-            catch { }
-        }
-
-        /// <summary>
-        /// 删除节点值
-        /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="attribute">属性名，非空时删除该节点属性值，否则删除节点值</param>
-        /// <param name="value">值</param>
-        /// 使用示列:
-        /// XMLProsess.Delete(path, "/Node", "")
-        public static void Delete(string path, string node)
-        {
-            try
-            {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                xn.ParentNode.RemoveChild(xn);
-                doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="node">节点</param>
-        /// <param name="attribute">属性名，非空时删除该节点属性值，否则删除节点值</param>
-        /// <param name="value">值</param>
-        /// 使用示列:
-        /// XMLProsess.Delete(path, "/Node", "Attribute")
-        public static void Delete(string path, string node, string attribute)
-        {
-            try
-            {
-                XmlDocument doc = Load(path);
-                XmlNode xn = doc.SelectSingleNode(node);
-                XmlElement xe = (XmlElement)xn;
-                if (attribute.Equals(""))
-                    xn.ParentNode.RemoveChild(xn);
-                else
-                    xe.RemoveAttribute(attribute);
-                doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
-            }
-            catch { }
         }
     }
 }

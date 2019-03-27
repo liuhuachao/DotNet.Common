@@ -33,13 +33,13 @@ namespace DotNet.Common
         /// <summary>
         /// XML 转 DataSet
         /// </summary>
-        /// <param name="fileName">XML文件名称</param>
-        public static DataSet XMLToDataSet(string fileName)
+        /// <param name="xmlFile">XML文件名称</param>
+        public static DataSet XMLToDataSet(string xmlFile)
         {
             try
             {
                 DataSet ds = new DataSet();
-                ds.ReadXml(fileName);
+                ds.ReadXml(xmlFile);
                 if (ds.Tables.Count > 0)
                 {
                     return ds;
