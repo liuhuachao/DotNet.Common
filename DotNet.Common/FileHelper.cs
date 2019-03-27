@@ -16,49 +16,48 @@ namespace DotNet.Common
         /// <summary>
         /// 获得绝对路径
         /// </summary>
-        /// <param name="strPath">指定的路径</param>
+        /// <param name="path">文件路径</param>
         /// <returns>绝对路径</returns>
-        public static string GetMapPath(string strPath)
+        public static string GetAbsolutePath(string path)
         {
-            String dirPath = "";
-            if (strPath.ToLower().StartsWith("http://"))
+            String absolutePath = "";
+            if (path.ToLower().StartsWith("http://"))
             {
-                return strPath;
+                return path;
             }
             if (HttpContext.Current != null)
             {
-                dirPath = HttpContext.Current.Server.MapPath(strPath);
+                absolutePath = HttpContext.Current.Server.MapPath(path);
             }
             else
             {
-                strPath = strPath.Replace("/", "\\");
-                if (strPath.StartsWith("\\"))
+                path = path.Replace("/", "\\");
+                if (path.StartsWith("\\"))
                 {
-                    strPath = strPath.Substring(strPath.IndexOf('\\', 1)).TrimStart('\\');
+                    path = path.Substring(path.IndexOf('\\', 1)).TrimStart('\\');
                 }
-                dirPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strPath);
+                absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
             }
-            return dirPath;
+            return absolutePath;
         }
 
         /// <summary>
         /// 写文件
         /// </summary>
         /// <param name="Path">文件路径</param>
-        /// <param name="Strings">文件内容</param>
-        public static void WriteFile(string Path, string Strings)
+        /// <param name="content">文件内容</param>
+        public static void WriteFile(string Path, string content)
         {
-
             if (!File.Exists(Path))
             {
-                FileStream f = File.Create(Path);
-                f.Close();
-                f.Dispose();
+                FileStream fs = File.Create(Path);
+                fs.Close();
+                fs.Dispose();
             }
-            StreamWriter f2 = new StreamWriter(Path, true, Encoding.UTF8);
-            f2.WriteLine(Strings);
-            f2.Close();
-            f2.Dispose();
+            StreamWriter sw = new StreamWriter(Path, true, Encoding.UTF8);
+            sw.WriteLine(content);
+            sw.Close();
+            sw.Dispose();
         }
 
         /// <summary>
@@ -68,28 +67,30 @@ namespace DotNet.Common
         /// <returns></returns>
         public static string ReadFile(string Path)
         {
-            string s = "";
+            string result = "";
             if (!System.IO.File.Exists(Path))
-                s = "不存在相应的目录";
+            {
+                result = "不存在相应的目录";
+            }                
             else
             {
-                StreamReader f2 = new StreamReader(Path, Encoding.GetEncoding("gb2312"));
-                s = f2.ReadToEnd();
-                f2.Close();
-                f2.Dispose();
+                StreamReader sr = new StreamReader(Path, Encoding.GetEncoding("gb2312"));
+                result = sr.ReadToEnd();
+                sr.Close();
+                sr.Dispose();
             }
-            return s;
+            return result;
         }
 
         /// <summary>
-        /// 追加文件内容
+        /// 追加内容
         /// </summary>
         /// <param name="Path">文件路径</param>
-        /// <param name="strings">内容</param>
-        public static void AppendText(string Path, string strings)
+        /// <param name="content">文件内容</param>
+        public static void AppendText(string Path, string content)
         {
             StreamWriter sw = File.AppendText(Path);
-            sw.Write(strings);
+            sw.Write(content);
             sw.Flush();
             sw.Close();
             sw.Dispose();

@@ -39,7 +39,7 @@ namespace DotNet.Common
             try
             {
                 DataSet ds = new DataSet();
-                ds.ReadXml(FileHelper.GetMapPath(path));
+                ds.ReadXml(FileHelper.GetAbsolutePath(path));
                 if (ds.Tables.Count > 0)
                 {
                     return ds;

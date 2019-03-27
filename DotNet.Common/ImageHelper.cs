@@ -129,16 +129,16 @@ namespace DotNet.Common
         /// <param name="watermarkTransparency">水印的透明度 1--10 10为不透明</param>
         public static void AddImageWaterMark(string imgPath, string filename, string watermarkFilename, int watermarkStatus, int quality, int watermarkTransparency)
         {
-            if (!File.Exists(FileHelper.GetMapPath(imgPath))) return;
-            byte[] _ImageBytes = File.ReadAllBytes(FileHelper.GetMapPath(imgPath));
+            if (!File.Exists(FileHelper.GetAbsolutePath(imgPath))) return;
+            byte[] _ImageBytes = File.ReadAllBytes(FileHelper.GetAbsolutePath(imgPath));
             Image img = Image.FromStream(new System.IO.MemoryStream(_ImageBytes));
-            filename = FileHelper.GetMapPath(filename);
+            filename = FileHelper.GetAbsolutePath(filename);
 
             if (watermarkFilename.StartsWith("/") == false)
             {
                 watermarkFilename = "/" + watermarkFilename;
             }                
-            watermarkFilename = FileHelper.GetMapPath(watermarkFilename);
+            watermarkFilename = FileHelper.GetAbsolutePath(watermarkFilename);
             if (!File.Exists(watermarkFilename)) return;
             Graphics g = Graphics.FromImage(img);
             //设置高质量插值法
@@ -258,9 +258,9 @@ namespace DotNet.Common
         /// <param name="fontsize">字体大小</param>
         public static void AddTextWaterMark(string imgPath, string filename, string watermarkText, int watermarkStatus, int quality, string fontname, int fontsize)
         {
-            byte[] _ImageBytes = File.ReadAllBytes(FileHelper.GetMapPath(imgPath));
+            byte[] _ImageBytes = File.ReadAllBytes(FileHelper.GetAbsolutePath(imgPath));
             Image img = Image.FromStream(new System.IO.MemoryStream(_ImageBytes));
-            filename = FileHelper.GetMapPath(filename);
+            filename = FileHelper.GetAbsolutePath(filename);
 
             Graphics g = Graphics.FromImage(img);
             //设置高质量插值法
