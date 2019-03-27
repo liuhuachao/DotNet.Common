@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -14,13 +15,13 @@ namespace DotNet.Common
         /// 序列化
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="filename">文件路径</param>
-        public static void Serialize(object obj, string filename)
+        /// <param name="fileName">文件名称</param>
+        public static void Serialize(object obj, string fileName)
         {
             FileStream fs = null;
             try
             {
-                fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
                 XmlSerializer serializer = new XmlSerializer(obj.GetType());
                 serializer.Serialize(fs, obj);
             }
@@ -42,14 +43,14 @@ namespace DotNet.Common
         /// 反序列化
         /// </summary>
         /// <param name="type">对象类型</param>
-        /// <param name="filename">文件路径</param>
+        /// <param name="fileName">文件名称</param>
         /// <returns></returns>
-        public static object Deserialize(Type type, string filename)
+        public static object Deserialize(Type type, string fileName)
         {
             FileStream fs = null;
             try
             {
-                fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 XmlSerializer serializer = new XmlSerializer(type);
                 return serializer.Deserialize(fs);
             }
@@ -69,21 +70,20 @@ namespace DotNet.Common
         /// <summary>
         /// 加载XML文件
         /// </summary>
-        /// <param name="XMLPath">XML文件路径</param>
-        private static XmlDocument Load(string strPath)
+        /// <param name="fileName">XML文件</param>
+        private static XmlDocument Load(string fileName)
         {
             XmlDocument xmldoc = new XmlDocument();
             try
             {
-                string filename = AppDomain.CurrentDomain.BaseDirectory.ToString() + strPath;
-                if (File.Exists(filename))
+                if (File.Exists(fileName))
                 {
-                    xmldoc.Load(filename);
+                    xmldoc.Load(fileName);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
             return xmldoc;
         }
