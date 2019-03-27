@@ -2,10 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DotNet.Common
 {
@@ -34,38 +31,25 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// DataTable转为对象LIST
+        /// XML 转 DataSet
         /// </summary>
-        /// <param name="dt"></param>
-        /// <returns>数据行是对象的类，类的属性与数据字段一致</returns>
-        public static IList DataTableToIList<T>(DataTable dt)
+        /// <param name="path">XML文件相对路径</param>
+        public DataSet XMLToDataSet(string path)
         {
-            // 定义集合    
-            string tempName = "";
-            IList list = new List<T>();
-            foreach (DataRow dr in dt.Rows)
+            try
             {
-                T obj = Activator.CreateInstance<T>();
-                //获得此模型的公共属性
-                PropertyInfo[] propertys = obj.GetType().GetProperties();
-                foreach (PropertyInfo pi in propertys)
+                DataSet ds = new DataSet();
+                ds.ReadXml(FileHelper.GetMapPath(path));
+                if (ds.Tables.Count > 0)
                 {
-                    tempName = pi.Name;
-                    //检查DataTable是否包含此列
-                    if (dt.Columns.Contains(tempName))
-                    {
-                        //判断此属性是否有Setter    
-                        if (!pi.CanWrite) continue;
-                        object value = dr[tempName];
-                        if (value != DBNull.Value)
-                        {
-                            pi.SetValue(obj, value, null);
-                        }
-                    }
+                    return ds;
                 }
-                list.Add(obj);
+                return null;
             }
-            return list;
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -102,19 +86,32 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// DataRow 转 HashTable
+        /// DataTable转为对象LIST
         /// </summary>
-        /// <param name="dr"></param>
-        /// <returns></returns>
-        public static Hashtable DataRowToHashTable(DataRow dr)
+        /// <param name="dt"></param>
+        /// <returns>数据行是对象的类，类的属性与数据字段一致</returns>
+        public static IList DataTableToIList<T>(DataTable dt)
         {
-            Hashtable ht = new Hashtable(dr.ItemArray.Length);
-            foreach (DataColumn dc in dr.Table.Columns)
+            IList list = new List<T>();
+            foreach (DataRow dr in dt.Rows)
             {
-                ht.Add(dc.ColumnName, dr[dc.ColumnName]);
+                T obj = Activator.CreateInstance<T>();
+                PropertyInfo[] propertys = obj.GetType().GetProperties();
+                foreach (PropertyInfo pi in propertys)
+                {
+                    if (dt.Columns.Contains(pi.Name))
+                    {
+                        if (!pi.CanWrite) continue;
+                        object value = dr[pi.Name];
+                        if (value != DBNull.Value)
+                        {
+                            pi.SetValue(obj, value, null);
+                        }
+                    }
+                }
+                list.Add(obj);
             }
-            return ht;
+            return list;
         }
-
     }
 }

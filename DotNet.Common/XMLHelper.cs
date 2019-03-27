@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -34,7 +31,9 @@ namespace DotNet.Common
             finally
             {
                 if (fs != null)
+                {
                     fs.Close();
+                }
             }
 
         }
@@ -68,16 +67,19 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 导入XML文件
+        /// 加载XML文件
         /// </summary>
         /// <param name="XMLPath">XML文件路径</param>
-        private static XmlDocument XMLLoad(string strPath)
+        private static XmlDocument Load(string strPath)
         {
             XmlDocument xmldoc = new XmlDocument();
             try
             {
                 string filename = AppDomain.CurrentDomain.BaseDirectory.ToString() + strPath;
-                if (File.Exists(filename)) xmldoc.Load(filename);
+                if (File.Exists(filename))
+                {
+                    xmldoc.Load(filename);
+                }
             }
             catch (Exception ex)
             {
@@ -99,7 +101,7 @@ namespace DotNet.Common
             string value = "";
             try
             {
-                XmlDocument doc = XMLLoad(path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 value = xn.InnerText;
             }
@@ -120,7 +122,7 @@ namespace DotNet.Common
             string value = "";
             try
             {
-                XmlDocument doc = XMLLoad(path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 value = (attribute.Equals("") ? xn.InnerText : xn.Attributes[attribute].Value);
             }
@@ -144,8 +146,7 @@ namespace DotNet.Common
         {
             try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 if (element.Equals(""))
                 {
@@ -180,8 +181,7 @@ namespace DotNet.Common
         {
             try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 XmlElement xe = doc.CreateElement(element);
                 string strAttribute = "";
@@ -218,7 +218,7 @@ namespace DotNet.Common
         {
             try
             {
-                XmlDocument doc = XMLLoad(path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 xn.InnerText = value;
                 doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
@@ -227,7 +227,7 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 修改指定节点的属性值(静态)
+        /// 修改指定节点的属性值
         /// </summary>
         /// <param name="path">路径</param>
         /// <param name="node">节点</param>
@@ -239,7 +239,7 @@ namespace DotNet.Common
         {
             try
             {
-                XmlDocument doc = XMLLoad(path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 XmlElement xe = (XmlElement)xn;
                 if (attribute.Equals(""))
@@ -264,7 +264,7 @@ namespace DotNet.Common
         {
             try
             {
-                XmlDocument doc = XMLLoad(path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 xn.ParentNode.RemoveChild(xn);
                 doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
@@ -285,7 +285,7 @@ namespace DotNet.Common
         {
             try
             {
-                XmlDocument doc = XMLLoad(path);
+                XmlDocument doc = Load(path);
                 XmlNode xn = doc.SelectSingleNode(node);
                 XmlElement xe = (XmlElement)xn;
                 if (attribute.Equals(""))
@@ -295,28 +295,6 @@ namespace DotNet.Common
                 doc.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + path);
             }
             catch { }
-        }
-
-        /// <summary>
-        /// 读取XML返回DataSet
-        /// </summary>
-        /// <param name="path">XML文件相对路径</param>
-        public DataSet GetDataSet(string path)
-        {
-            try
-            {
-                DataSet ds = new DataSet();
-                ds.ReadXml(FileHelper.GetMapPath(path));
-                if (ds.Tables.Count > 0)
-                {
-                    return ds;
-                }
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
     }
 }
