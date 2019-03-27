@@ -33,13 +33,13 @@ namespace DotNet.Common
         /// <summary>
         /// XML 转 DataSet
         /// </summary>
-        /// <param name="path">XML文件相对路径</param>
-        public DataSet XMLToDataSet(string path)
+        /// <param name="fileName">XML文件名称</param>
+        public static DataSet XMLToDataSet(string fileName)
         {
             try
             {
                 DataSet ds = new DataSet();
-                ds.ReadXml(FileHelper.GetAbsolutePath(path));
+                ds.ReadXml(fileName);
                 if (ds.Tables.Count > 0)
                 {
                     return ds;
