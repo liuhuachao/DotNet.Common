@@ -113,5 +113,50 @@ namespace DotNet.Common
             }
             return list;
         }
+
+        /// <summary>
+        /// 根据类型创建空表
+        /// 表名和类型名称相同，列名和类型可写属性名称相同
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static DataTable CreateEmptyDataTableFromClass<T>()
+        {
+            DataTable dt = null;
+            Type obj = typeof(T);
+            var objClassName = obj.Name;
+            dt = new DataTable(objClassName);
+            PropertyInfo[] propertys = obj.GetProperties();
+            foreach (var pi in propertys)
+            {
+                if (!pi.CanWrite) continue;
+                if (!dt.Columns.Contains(pi.Name))
+                {
+                    dt.Columns.Add(pi.Name, typeof(string));
+                }
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// IList 转 DataTable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static DataTable IListToDataTable<T>(List<T> list)
+        {
+            DataTable dt = CreateEmptyDataTableFromClass<T>();
+            foreach (var item in list)
+            {
+                DataRow dr = dt.NewRow();
+                foreach (var column in dt.Columns)
+                {                    
+                    dr[column.ToString()] = item.GetType().GetProperty(column.ToString()).GetValue(item);                    
+                }
+                dt.Rows.Add(dr);
+            }
+            return dt;
+        }
     }
 }
