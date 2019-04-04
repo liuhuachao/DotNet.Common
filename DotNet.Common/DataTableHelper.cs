@@ -115,12 +115,12 @@ namespace DotNet.Common
         }
 
         /// <summary>
-        /// 根据类型创建空表
-        /// 表名和类型名称相同，列名和类型可写属性名称相同
+        /// 根据类型属性创建空表
+        /// 表名和类型名称相同，列名和类型可读属性名称相同
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static DataTable CreateEmptyDataTableFromClass<T>()
+        public static DataTable CreateEmptyDataTableFromProperties<T>()
         {
             DataTable dt = null;
             Type obj = typeof(T);
@@ -129,10 +129,37 @@ namespace DotNet.Common
             PropertyInfo[] propertys = obj.GetProperties();
             foreach (var pi in propertys)
             {
-                if (!pi.CanWrite) continue;
+                if (!pi.CanRead)
+                {
+                    continue;
+                }
                 if (!dt.Columns.Contains(pi.Name))
                 {
                     dt.Columns.Add(pi.Name, typeof(string));
+                }
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// 根据类型字段创建空表
+        /// 表名和类型名称相同，列名和类型公共字段名称相同
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static DataTable CreateEmptyDataTableFromFields<T>()
+        {
+            DataTable dt = null;
+            Type obj = typeof(T);
+            var objClassName = obj.Name;
+            dt = new DataTable(objClassName);
+            FieldInfo[] fieldInfos = obj.GetFields();
+            foreach (var fi in fieldInfos)
+            {
+                var columnName = fi.GetRawConstantValue().ToString();
+                if (!dt.Columns.Contains(columnName))
+                {
+                    dt.Columns.Add(columnName, typeof(string));
                 }
             }
             return dt;
