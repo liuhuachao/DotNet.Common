@@ -210,7 +210,7 @@ namespace DotNet.Common
         /// <returns></returns>
         public static DataTable IListToDataTable<T>(List<T> list)
         {
-            DataTable dt = CreateEmptyDataTableFromClass<T>();
+            DataTable dt = CreateEmptyDataTableFromProperties<T>();
             foreach (var item in list)
             {
                 DataRow dr = dt.NewRow();
