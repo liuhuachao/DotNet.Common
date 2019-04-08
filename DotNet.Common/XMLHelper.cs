@@ -18,55 +18,36 @@ namespace DotNet.Common
         /// 序列化
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="fileName">文件名称</param>
-        public static void Serialize(object obj, string fileName)
+        public static string Serialize<T>(T obj)
         {
-            FileStream fs = null;
-            try
+            using (StringWriter sw = new StringWriter())
             {
-                fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                Type t = obj.GetType();
                 XmlSerializer serializer = new XmlSerializer(obj.GetType());
-                serializer.Serialize(fs, obj);
+                serializer.Serialize(sw, obj);
+                sw.Close();
+                return sw.ToString();
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (fs != null)
-                {
-                    fs.Close();
-                }
-            }
-
         }
 
         /// <summary>
         /// 反序列化
         /// </summary>
-        /// <param name="type">对象类型</param>
-        /// <param name="fileName">文件名称</param>
+        /// <param name="strXML">xml 字符串</param>
         /// <returns></returns>
-        public static object Deserialize(Type type, string fileName)
+        public static T Deserialize<T>(string strXML) where T : class
         {
-            FileStream fs = null;
             try
             {
-                fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                XmlSerializer serializer = new XmlSerializer(type);
-                return serializer.Deserialize(fs);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (fs != null)
+                using (StringReader sr = new StringReader(strXML))
                 {
-                    fs.Close();
+                    XmlSerializer serializer = new XmlSerializer(typeof(T));
+                    return serializer.Deserialize(sr) as T;
                 }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
