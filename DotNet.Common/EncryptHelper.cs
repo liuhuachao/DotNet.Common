@@ -3,7 +3,6 @@ using System.Web.Security;
 using System.Security.Cryptography;
 using System.Text;
 
-
 namespace DotNet.Common
 {
     /// <summary>
@@ -12,10 +11,6 @@ namespace DotNet.Common
     public class EncryptHelper
     {
         private const string SECRETKEY = "liuhuachao";
-
-        public EncryptHelper()
-        {
-        }
 
         /// <summary>
         /// 加密
