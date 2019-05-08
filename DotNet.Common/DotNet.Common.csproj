@@ -90,6 +90,7 @@
     <Compile Include="ImageHelper.cs" />
     <Compile Include="IPHelper.cs" />
     <Compile Include="JavaScriptHelper.cs" />
+    <Compile Include="JsonHelper.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="MailHelper.cs" />
     <Compile Include="Md5Helper.cs" />
