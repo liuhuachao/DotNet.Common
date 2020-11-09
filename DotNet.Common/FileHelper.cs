@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace DotNet.Common
 {
@@ -95,5 +96,108 @@ namespace DotNet.Common
             sw.Close();
             sw.Dispose();
         }
+
+        #region 文件压缩/解压缩
+
+        /// <summary>
+        /// 将文件夹压缩为文件
+        /// </summary>
+        /// <param name="zipFileName">zip 文件名</param>
+        /// <param name="sourceDirectory">原目录</param>
+        /// <param name="recurse">是否递归子目录</param>
+        /// <param name="fileFilter">目录过滤参数（正则表达式）</param>
+        public static void CreateZipByDictory(string zipFileName, string sourceDirectory, bool recurse = true, string fileFilter = "")
+        {
+            (new FastZip()).CreateZip($@"{zipFileName}", $@"{sourceDirectory}", recurse, fileFilter);
+        }
+
+        /// <summary>
+        /// 创建zip文件，并添加文件
+        /// </summary>
+        /// <param name="zipFileName">zip 文件</param>
+        /// <param name="fileNameList">要添加的文件名列表</param>
+        public static void CreateZipAddFile(string zipFileName, List<string> fileNameList)
+        {
+            using (ZipFile zip = ZipFile.Create($@"{zipFileName}"))
+            {
+                zip.BeginUpdate();
+                foreach (var fileName in fileNameList)
+                {
+                    zip.Add($@"{fileName}");
+                }
+                zip.CommitUpdate();
+            }
+        }
+
+        /// <summary>
+        /// 修改zip文件，并添加文件
+        /// </summary>
+        /// <param name="zipFileName">zip 文件</param>
+        /// <param name="fileNameList">要添加的文件名列表</param>
+        public static void UpdateZipAddFile(string zipFileName, List<string> fileNameList)
+        {
+            using (ZipFile zip = new ZipFile($@"{zipFileName}"))
+            {
+                zip.BeginUpdate();
+                foreach (var fileName in fileNameList)
+                {
+                    zip.Add($@"{fileName}");
+                }
+                zip.CommitUpdate();
+            }
+        }
+
+        /// <summary>
+        /// 修改zip文件，并删除文件
+        /// </summary>
+        /// <param name="zipFileName">zip 文件</param>
+        /// <param name="fileNameList">要添加的文件名列表</param>
+        public static void UpdateZipDeleteFile(string zipFileName, List<string> fileNameList)
+        {
+            using (ZipFile zip = new ZipFile($@"{zipFileName}"))
+            {
+                zip.BeginUpdate();
+                var fileList = GetFileListByZip($@"{zipFileName}");
+                foreach (var fileName in fileNameList)
+                {
+                    if (fileList.Contains($@"{fileName}"))
+                    {
+                        zip.Delete($@"{fileName}");
+                    }
+                }
+                zip.CommitUpdate();
+            }
+        }
+
+        /// <summary>
+        /// 获取 Zip 文件中的文件
+        /// </summary>
+        /// <param name="zipFileName"></param>
+        /// <returns></returns>
+        public static List<string> GetFileListByZip(string zipFileName)
+        {
+            var fileList = new List<string>();
+            using (ZipFile zip = new ZipFile($@"{zipFileName}"))
+            {
+                foreach (ZipEntry entry in zip)
+                {
+                    fileList.Add(entry.Name);
+                }
+            }
+            return fileList;
+        }
+
+        /// <summary>
+        /// 解压zip文件中文件到指定目录下
+        /// </summary>
+        /// <param name="zipFileName">zip 文件名</param>
+        /// <param name="targetDirectory">目标目录</param>
+        /// <param name="fileFilter">目录过滤参数（正则表达式）</param>
+        public static void ExtractZip(string zipFileName, string targetDirectory, string fileFilter = "")
+        {
+            (new FastZip()).ExtractZip($@"{zipFileName}", $@"{targetDirectory}", fileFilter);
+        }
+
+        #endregion
     }
 }
