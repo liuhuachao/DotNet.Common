@@ -61,5 +61,14 @@ namespace DotNet.Common.Test
 
             NPOIHelper.DataTableToExcel(dt1, "c:/test.xlsx");
         }
+
+
+        [TestMethod()]
+        public void TestExcelToDataSet()
+        {
+            var ds = NPOIHelper.ExcelToDataSet("c:/test.xls");
+        }
+
+        
     }
 }
