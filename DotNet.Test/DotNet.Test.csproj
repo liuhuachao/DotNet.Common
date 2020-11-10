@@ -56,6 +56,7 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NPOIHelperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SendSmsHelperTest.cs" />
     <Compile Include="RestSharpTest.cs" />
