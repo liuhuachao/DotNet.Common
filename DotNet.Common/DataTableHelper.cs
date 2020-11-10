@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 
 namespace DotNet.Common
@@ -167,7 +168,7 @@ namespace DotNet.Common
 
         /// <summary>
         /// 获取 in where 条件
-        /// 针对 Oracle 查询中 in 参数超过1000的处理方法
+        /// 针对 Oracle 查询中 in 参数值超过1000的处理方法
         /// </summary>
         /// <param name="dt">数据源 DataTable</param>
         /// <param name="columnName">DataTable 列名</param>
@@ -176,7 +177,7 @@ namespace DotNet.Common
         public static string GetInWhere(DataTable dt, string columnName, string keyName)
         {
             var where = string.Empty;
-            var whereKey = string.Empty;
+            var inWhere = string.Empty;
             dt = dt.DefaultView.ToTable(true, columnName);
             for (int i = 0; i < dt.Rows.Count; i++)
             {
@@ -187,18 +188,54 @@ namespace DotNet.Common
                 }
                 if (i == dt.Rows.Count - 1)
                 {
-                    whereKey += $"'{key}'";
+                    inWhere += $"'{key}'";
                 }
                 else if (i > 0 && i % 999 == 0)
                 {
-                    whereKey += $"'{key}') OR {keyName} IN (";
+                    inWhere += $"'{key}') OR {keyName} IN (";
                 }
                 else
                 {
-                    whereKey += $"'{key}',";
+                    inWhere += $"'{key}',";
                 }
             }
-            where += $" {keyName} IN ({whereKey}) ";
+            where += $" {keyName} IN ({inWhere}) ";
+            return where;
+        }
+
+        /// <summary>
+        /// 获取 in where 条件
+        /// 针对 Oracle 查询中 in 参数值超过1000的处理方法
+        /// </summary>
+        /// <param name="list">列值列表</param>
+        /// <param name="columnName">列名(带表名)</param>
+        /// <returns></returns>
+        public static string GetInWhere(List<string> list, string columnName)
+        {
+            var where = string.Empty;
+            var inWhere = string.Empty;
+            list = list.Distinct().ToList();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var key = list[i];
+                if (string.IsNullOrEmpty(key))
+                {
+                    continue;
+                }
+                if (i == list.Count - 1)
+                {
+                    inWhere += $"'{key}'";
+                }
+                else if (i > 0 && i % 999 == 0)
+                {
+                    inWhere += $"'{key}') OR {columnName} IN (";
+                }
+                else
+                {
+                    inWhere += $"'{key}',";
+                }
+            }
+            where += $" {columnName} IN ({inWhere}) ";
             return where;
         }
 
