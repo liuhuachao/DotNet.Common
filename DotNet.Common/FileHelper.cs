@@ -97,6 +97,67 @@ namespace DotNet.Common
             sw.Dispose();
         }
 
+        /// <summary>
+        /// 替换文件中的字符串
+        /// </summary>
+        /// <param name="srcFile"></param>
+        /// <param name="targetFile"></param>
+        /// <param name="targetStr"></param>
+        /// <param name="msg"></param>
+        /// <param name="srcStr"></param>
+        /// <returns></returns>
+        public static bool ReplaceFileString(string srcFile, string targetFile, string targetStr, out string msg, string srcStr = "[PMJCode]")
+        {
+            var isSuccess = false;
+            msg = string.Empty;
+
+            try
+            {
+                if (string.IsNullOrEmpty(srcFile) || string.IsNullOrEmpty(targetFile) || string.IsNullOrEmpty(targetStr))
+                {
+                    msg = "替换文件字符串的方法参数不能为空！";
+                }
+                else
+                {
+                    if (!File.Exists(srcFile))
+                    {
+                        msg = "替换文件字符串的模板文件（tlk文件）不存在！";
+                    }
+                    else
+                    {
+                        var targetPath = Path.GetDirectoryName(targetFile);
+                        if (!System.IO.Directory.Exists(targetPath))
+                        {
+                            System.IO.Directory.CreateDirectory(targetPath);
+                        }
+
+                        if (File.Exists(targetFile))
+                        {
+                            File.Delete(targetPath);
+                        }
+
+                        StreamReader reader = new StreamReader($@"{srcFile}", Encoding.Default);
+                        String str = reader.ReadToEnd();
+                        str = str.Replace($@"{srcStr}", $@"{targetStr}");
+                        StreamWriter readTxt = new StreamWriter($@"{targetFile}", false, Encoding.Default);
+                        readTxt.Write(str);
+                        readTxt.Flush();
+                        readTxt.Close();
+                        reader.Close();
+
+                        isSuccess = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                msg = $"替换文件字符串异常：{ex.Message + ex.StackTrace}";
+                throw;
+            }
+
+            return isSuccess;
+        }
+
         #region 文件压缩/解压缩
 
         /// <summary>

@@ -102,6 +102,7 @@
     <Compile Include="RegexHelper.cs" />
     <Compile Include="SendSmsHelper.cs" />
     <Compile Include="SessionHelper.cs" />
+    <Compile Include="StringHelper.cs" />
     <Compile Include="UrlHelper.cs" />
     <Compile Include="ValidCodeHelper.cs" />
     <Compile Include="WeixinHelper.cs" />
@@ -113,6 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="get-weixin-code.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FilePath\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
