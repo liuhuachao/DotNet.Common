@@ -26,7 +26,14 @@ namespace DotNet.Common.Test
             var srcFile = @"F:\personal\DotNet.Common\DotNet.Test\bin\Debug\FilePath\Source\template.tlk";
             var targetFile = @"F:\personal\DotNet.Common\DotNet.Test\bin\Debug\FilePath\Target\1.tlk";
 
-            FileHelper.ReplaceFileString(srcFile,targetFile,"HelloWorld",out string msg);
+            FileHelper.ReplaceFileString(srcFile, targetFile, "HelloWorld", out string msg);
+        }
+
+        [TestMethod()]
+        public void TestRunProcess()
+        {
+            var sendMsg = string.Empty;
+            var result = FileHelper.RunProcess($"cmd.exe", $"adb push c:/test/ /mnt/sdcard/msg/1.tlk", out sendMsg);
         }
     }
 }

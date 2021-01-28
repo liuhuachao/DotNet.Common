@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace DotNet.Common
     /// </summary>
     public class FileHelper
     {
+        static LogHelper logHelper = new LogHelper("FileHelper");
+
         /// <summary>
         /// 获得绝对路径
         /// </summary>
@@ -28,7 +31,7 @@ namespace DotNet.Common
             }
             if (HttpContext.Current != null)
             {
-                absolutePath = HttpContext.Current.Server.MapPath(path);
+                absolutePath = Path.Combine(HttpRuntime.AppDomainAppPath.ToString(), path);
             }
             else
             {
@@ -95,67 +98,6 @@ namespace DotNet.Common
             sw.Flush();
             sw.Close();
             sw.Dispose();
-        }
-
-        /// <summary>
-        /// 替换文件中的字符串
-        /// </summary>
-        /// <param name="srcFile"></param>
-        /// <param name="targetFile"></param>
-        /// <param name="targetStr"></param>
-        /// <param name="msg"></param>
-        /// <param name="srcStr"></param>
-        /// <returns></returns>
-        public static bool ReplaceFileString(string srcFile, string targetFile, string targetStr, out string msg, string srcStr = "[PMJCode]")
-        {
-            var isSuccess = false;
-            msg = string.Empty;
-
-            try
-            {
-                if (string.IsNullOrEmpty(srcFile) || string.IsNullOrEmpty(targetFile) || string.IsNullOrEmpty(targetStr))
-                {
-                    msg = "替换文件字符串的方法参数不能为空！";
-                }
-                else
-                {
-                    if (!File.Exists(srcFile))
-                    {
-                        msg = "替换文件字符串的模板文件（tlk文件）不存在！";
-                    }
-                    else
-                    {
-                        var targetPath = Path.GetDirectoryName(targetFile);
-                        if (!System.IO.Directory.Exists(targetPath))
-                        {
-                            System.IO.Directory.CreateDirectory(targetPath);
-                        }
-
-                        if (File.Exists(targetFile))
-                        {
-                            File.Delete(targetPath);
-                        }
-
-                        StreamReader reader = new StreamReader($@"{srcFile}", Encoding.Default);
-                        String str = reader.ReadToEnd();
-                        str = str.Replace($@"{srcStr}", $@"{targetStr}");
-                        StreamWriter readTxt = new StreamWriter($@"{targetFile}", false, Encoding.Default);
-                        readTxt.Write(str);
-                        readTxt.Flush();
-                        readTxt.Close();
-                        reader.Close();
-
-                        isSuccess = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                msg = $"替换文件字符串异常：{ex.Message + ex.StackTrace}";
-                throw;
-            }
-
-            return isSuccess;
         }
 
         #region 文件压缩/解压缩
@@ -260,5 +202,126 @@ namespace DotNet.Common
         }
 
         #endregion
+
+        /// <summary>
+        /// 替换文件中的字符串
+        /// </summary>
+        /// <param name="srcFile"></param>
+        /// <param name="targetFile"></param>
+        /// <param name="targetStr"></param>
+        /// <param name="msg"></param>
+        /// <param name="srcStr"></param>
+        /// <returns></returns>
+        public static bool ReplaceFileString(string srcFile, string targetFile, string targetStr, out string msg, string srcStr = "[PMJCode]")
+        {
+            var isSuccess = false;
+            msg = string.Empty;
+
+            try
+            {
+                if (string.IsNullOrEmpty(srcFile) || string.IsNullOrEmpty(targetFile) || string.IsNullOrEmpty(targetStr))
+                {
+                    msg = "替换文件字符串的方法参数不能为空！";
+                }
+                else
+                {
+                    if (!File.Exists(srcFile))
+                    {
+                        msg = "替换文件字符串的模板文件（tlk文件）不存在！";
+                    }
+                    else
+                    {
+                        var targetPath = Path.GetDirectoryName(targetFile);
+                        if (!System.IO.Directory.Exists(targetPath))
+                        {
+                            System.IO.Directory.CreateDirectory(targetPath);
+                        }
+
+                        if (File.Exists(targetFile))
+                        {
+                            File.Delete(targetPath);
+                        }
+
+                        StreamReader reader = new StreamReader($@"{srcFile}", Encoding.Default);
+                        String str = reader.ReadToEnd();
+                        str = str.Replace($@"{srcStr}", $@"{targetStr}");
+                        StreamWriter readTxt = new StreamWriter($@"{targetFile}", false, Encoding.Default);
+                        readTxt.Write(str);
+                        readTxt.Flush();
+                        readTxt.Close();
+                        reader.Close();
+
+                        isSuccess = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                msg = $"替换文件字符串异常：{ex.Message + ex.StackTrace}";
+                throw;
+            }
+
+            return isSuccess;
+        }
+
+        public static bool RunProcess(string processPath, string inputStr, out string outPutStr, int millisecond = 3000)
+        {
+            bool result = false;
+            outPutStr = string.Empty;
+
+            if (!string.IsNullOrEmpty(processPath) && !string.IsNullOrEmpty(inputStr))
+            {
+                Process process = new Process(); //创建进程对象               
+                process.StartInfo.FileName = processPath; //设定需要执行的命令
+                process.StartInfo.UseShellExecute = false; //不使用系统外壳程序启动
+                process.StartInfo.RedirectStandardInput = true; //不重定向输入
+                process.StartInfo.RedirectStandardOutput = true; //重定向输出
+                process.StartInfo.RedirectStandardError = true; //
+                process.StartInfo.CreateNoWindow = true; //不创建窗口
+                
+                try
+                {
+                    if (process.Start()) //开始进程
+                    {                        
+                        process.StandardInput.WriteLine(inputStr + "&exit"); //向cmd窗口发送输入信息
+                        process.StandardInput.AutoFlush = true;
+
+                        var errorStr = process.StandardError.ReadToEnd();
+                        if (!string.IsNullOrEmpty(errorStr))
+                        {
+                            outPutStr = errorStr;
+                        }
+                        else
+                        {
+                            //获取cmd窗口的输出信息
+                            outPutStr = process.StandardOutput.ReadToEnd();
+
+                            if (millisecond == 0)
+                            {
+                                process.WaitForExit(); //这里无限等待进程结束
+                            }
+                            else
+                            {
+                                process.WaitForExit(millisecond); //等待进程结束，等待时间为指定的毫秒
+                            }
+
+                            result = true;
+                        }                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    FileHelper.logHelper.Info($"RunProcess方法执行异常，消息如下：{ex.Message + ex.StackTrace}");
+                }
+                finally
+                {
+                    if (process != null)
+                        process.Close();
+                }
+            }
+
+            FileHelper.logHelper.Info($"RunProcess方法执行参数：processPath：{processPath}，inputStr：{inputStr}");
+            return result;
+        }
     }
 }
