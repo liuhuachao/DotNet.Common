@@ -16,5 +16,19 @@ namespace DotNet.Common.Test
         {
             StringHelper.SplitAndComb("短心轨 8125 客专07004-Ⅲ-8 右-G-H/Z");
         }
+
+        [TestMethod()]
+        public void TestGetFirstPinyin()
+        {
+            var returnStr = StringHelper.GetFirstPinyin("客专07004");
+            returnStr = returnStr.Split('-')[0];
+            var srcNumber = System.Text.RegularExpressions.Regex.Replace(returnStr,@"[^0-9]+","");
+            var desNumber = srcNumber;
+            if (!string.IsNullOrEmpty(srcNumber) && srcNumber.Length > 2)
+            {
+                desNumber = "(" + srcNumber.Insert(2,")");
+            }
+            returnStr = returnStr.Replace(srcNumber,desNumber);            
+        }
     }
 }
