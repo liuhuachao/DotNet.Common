@@ -204,7 +204,7 @@ namespace DotNet.Common
         #endregion
 
         /// <summary>
-        /// 替换文件中的字符串
+        /// 替换文本文件中的字符串
         /// </summary>
         /// <param name="srcFile"></param>
         /// <param name="targetFile"></param>
