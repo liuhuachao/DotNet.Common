@@ -42,7 +42,7 @@ namespace DotNet.Common.Test
             ds.Tables.Add(dt1);
             ds.Tables.Add(dt2);
 
-            NPOIHelper.DataSetToExcel(ds,"c:/test.xls");            
+            ExcelHelper.DataSetToExcel(ds,"c:/test.xls");            
         }
 
         [TestMethod()]
@@ -59,14 +59,14 @@ namespace DotNet.Common.Test
             dt1.Rows.Add(2, "李四");
             dt1.Rows.Add(3, "王五");
 
-            NPOIHelper.DataTableToExcel(dt1, "c:/test.xlsx");
+            ExcelHelper.DataTableToExcel(dt1, "c:/test.xlsx");
         }
 
 
         [TestMethod()]
         public void TestExcelToDataSet()
         {
-            var ds = NPOIHelper.ExcelToDataSet("c:/test.xls");
+            var ds = ExcelHelper.ExcelToDataSet("c:/test.xls");
         }
 
         

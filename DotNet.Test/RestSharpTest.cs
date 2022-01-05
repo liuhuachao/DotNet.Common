@@ -15,7 +15,7 @@ namespace DotNet.Test
             var request = new RestRequest("v1/Homes/GetDetail", Method.GET);
             request.AddParameter("id", 300);
             request.AddParameter("showType", 3);
-            IRestResponse<ResultMsg> response = await client.ExecuteTaskAsync<ResultMsg>(request);
+            IRestResponse<ResultMsg> response = await client.ExecuteAsync<ResultMsg>(request);
 
             string expectedStr = "200";
             string actualStr = "";

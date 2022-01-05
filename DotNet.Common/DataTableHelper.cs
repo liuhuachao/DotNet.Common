@@ -71,6 +71,7 @@ namespace DotNet.Common
             }
             return model;
         }
+
         public static object HackType(object value, Type conversionType)
         {
             if (conversionType.IsGenericType && conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
@@ -81,6 +82,7 @@ namespace DotNet.Common
             }
             return Convert.ChangeType(value, conversionType);
         }
+
         public static bool IsNullOrDBNull(object obj)
         {
             return ((obj is DBNull) || string.IsNullOrEmpty(obj.ToString())) ? true : false;

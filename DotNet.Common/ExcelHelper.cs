@@ -11,9 +11,9 @@ using NPOI.HSSF.Util;
 namespace DotNet.Common
 {
     /// <summary>
-    /// NPOIHelper,Excel导入导出帮助类 
+    /// Excel导入导出帮助类 
     /// </summary>
-    public class NPOIHelper
+    public class ExcelHelper
     {
         /// <summary>
         /// DataSet 导出 Excel文件
@@ -258,22 +258,29 @@ namespace DotNet.Common
         /// <param name="file"></param>
         private static void ExportFileFromBook(IWorkbook book, string file)
         {
-            //校验入参
+            // 校验入参
             if (book == null || string.IsNullOrEmpty(file)) return;
 
-            //转为字节数组
+            // 转为字节数组
             MemoryStream stream = new MemoryStream();
             book.Write(stream);
             var buf = stream.ToArray();
 
-            //保存为Excel文件  
+            // 创建目录
+            var path = Path.GetDirectoryName(file);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            // 保存为Excel文件  
             using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
                 fs.Write(buf, 0, buf.Length);
                 fs.Flush();
             }
 
-            //输出到浏览器
+            // 输出到浏览器
             //System.Web.HttpContext curContext = System.Web.HttpContext.Current;
             //curContext.Response.Clear();
             //curContext.Response.ContentType = "application/x-excel";
@@ -324,24 +331,24 @@ namespace DotNet.Common
         /// <param name="borderTop">上边框</param>
         /// <param name="borderBottom">下边框</param>
         /// <returns></returns>
-        private static ICellStyle GetICellStyle(IWorkbook book, string fontname, int fontsize, int boldweight, IColor color = null, FontUnderlineType underLineType = 0, BorderStyle borderLeft = BorderStyle.Thin, BorderStyle borderRight = BorderStyle.Thin, BorderStyle borderTop = BorderStyle.Thin, BorderStyle borderBottom = BorderStyle.Thin)
+        private static ICellStyle GetICellStyle(IWorkbook book, string fontname, int fontsize, int boldweight, short color = 0, FontUnderlineType underLineType = 0, BorderStyle borderLeft = BorderStyle.Thin, BorderStyle borderRight = BorderStyle.Thin, BorderStyle borderTop = BorderStyle.Thin, BorderStyle borderBottom = BorderStyle.Thin)
         {
             ICellStyle cellstyle = book.CreateCellStyle();
 
-            //字体
+            // 字体
             IFont ifont = book.CreateFont();
-            ifont.FontName = fontname;            //字体样式：宋体/黑体
-            ifont.Boldweight = (short)boldweight; //字体粗细
-            ifont.FontHeightInPoints = (short)fontsize;  //字体大小
-            if (color != null) ifont.Color = color.Indexed;  //颜色
-            ifont.Underline = underLineType;  //下划线
+            ifont.FontName = fontname;                              // 字体样式：宋体/黑体
+            ifont.IsBold = true;                                    // 字体粗细
+            ifont.FontHeightInPoints = (short)fontsize;             // 字体大小
+            if (color != 0) ifont.Color = color;                    // 颜色
+            ifont.Underline = underLineType;                        // 下划线
             cellstyle.SetFont(ifont);
 
-            //对齐方式
-            cellstyle.Alignment = HorizontalAlignment.Center; //水平居中
+            // 对齐方式
+            cellstyle.Alignment = HorizontalAlignment.Center;       //水平居中
             cellstyle.VerticalAlignment = VerticalAlignment.Center; //垂直居中
 
-            //边框
+            // 边框
             cellstyle.BorderLeft = borderLeft;
             cellstyle.BorderRight = borderRight;
             cellstyle.BorderTop = borderTop;
