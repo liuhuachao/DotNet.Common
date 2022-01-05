@@ -95,10 +95,12 @@
     <Compile Include="SendSmsHelperTest.cs" />
     <Compile Include="RestSharpTest.cs" />
     <Compile Include="StringHelperTest.cs" />
+    <Compile Include="WordHelperTest.cs" />
     <Compile Include="XMLHelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Files\真空断路器出厂检验报告样例.docx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

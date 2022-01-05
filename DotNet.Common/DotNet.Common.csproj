@@ -115,6 +115,7 @@
     <Compile Include="UrlHelper.cs" />
     <Compile Include="ValidCodeHelper.cs" />
     <Compile Include="WeixinHelper.cs" />
+    <Compile Include="WordHelper.cs" />
     <Compile Include="XMLHelper.cs" />
   </ItemGroup>
   <ItemGroup>
