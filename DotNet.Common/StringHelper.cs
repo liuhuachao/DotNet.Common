@@ -9,20 +9,6 @@ namespace DotNet.Common
 {
     public class StringHelper
     {
-        public static string SplitAndComb(string srcStr)
-        {
-            var a = srcStr.Split(' ')[1];
-            var b = srcStr.Split(' ')[2];
-            var c = string.Empty;
-            var d = string.Empty;
-            var e = "E";
-            var f = string.Empty;
-            var g = "G";
-
-            var z = string.Join(" ", new string[] { a, b, c, d, e, f, g });
-            return c;
-        }
-
         /// <summary>
         /// 获取单个字符的拼音
         /// </summary>
@@ -39,10 +25,9 @@ namespace DotNet.Common
         /// </summary>
         /// <param name="text">要获取拼音的文本</param>
         /// <returns></returns>
-        public static string GetPinyin(string text)
+        public static string GetPinyin(string text, string separator = " ")
         {
-            var separator = ",";
-            var pinyin = PinyinHelper.GetPinyin(text,separator);
+            var pinyin = PinyinHelper.GetPinyin(text, separator);
             return pinyin;
         }
 
@@ -51,13 +36,13 @@ namespace DotNet.Common
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string GetFirstPinyin(string text)
+        public static string GetFirstPinyin(string text, string separator = " ")
         {
             var returnStr = string.Empty;
-            var pinyinArray = PinyinHelper.GetPinyin(text, ",").Split(',');
+            var pinyinArray = PinyinHelper.GetPinyin(text, separator).Split(separator.ToCharArray());
             foreach (var item in pinyinArray)
             {
-                returnStr += item.Substring(0,1);
+                returnStr += item.Substring(0, 1);
             }
             return returnStr;
         }

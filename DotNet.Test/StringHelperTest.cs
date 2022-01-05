@@ -12,12 +12,6 @@ namespace DotNet.Common.Test
     public class StringHelperTest
     {
         [TestMethod()]
-        public void TestSplitAndComb()
-        {
-            StringHelper.SplitAndComb("短心轨 8125 客专07004-Ⅲ-8 右-G-H/Z");
-        }
-
-        [TestMethod()]
         public void TestGetFirstPinyin()
         {
             var returnStr = StringHelper.GetFirstPinyin("客专07004");

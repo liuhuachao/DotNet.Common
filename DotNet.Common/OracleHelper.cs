@@ -2,8 +2,7 @@
 /// Oracle 帮助类
 /// </summary>
 public static class OracleHelper
-{
-   
+{   
     /// <summary>
     /// 获取 in where 条件
     /// 针对 Oracle 查询中 in 参数超过1000的处理方法
@@ -76,4 +75,5 @@ public static class OracleHelper
         where += $" {keyName} IN ({whereKey}) ";
         return where;
     }
+
 }
